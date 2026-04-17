@@ -20,8 +20,8 @@ def optional(name: str, default: str = "") -> str:
 
 def conn_params() -> dict:
     return {
-        "host": required("DB_HOST"),
-        "port": int(required("DB_PORT")),
+        "host": optional("DB_HOST", "localhost"),
+        "port": int(optional("DB_PORT", "5432")),
         "dbname": required("DB_NAME"),
         "user": required("DB_USER"),
         "password": optional("DB_PASSWORD", ""),
