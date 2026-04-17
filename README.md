@@ -1,4 +1,7 @@
 # VisualizationAPI
+Josue David Chan Negroe
+Nahum Francisco Massa Mandujano
+Elio Eduardo Ucan Zapata
 
 Loads CSV data files into a PostgreSQL database for visualization and analysis.
 
