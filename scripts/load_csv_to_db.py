@@ -22,6 +22,49 @@ FOREIGN_KEYS = {
     "loans": [("customer_id", "customers", "customer_id")],
 }
 
+# Canonical PostgreSQL schema used to create each table from CSV headers.
+TABLE_SCHEMAS = {
+    "customers": {
+        "customer_id": "TEXT",
+        "first_name": "TEXT",
+        "last_name": "TEXT",
+        "email": "TEXT",
+        "city": "TEXT",
+        "credit_score": "INTEGER",
+        "created_at": "DATE",
+    },
+    "accounts": {
+        "account_id": "TEXT",
+        "customer_id": "TEXT",
+        "account_type": "TEXT",
+        "balance_usd": "NUMERIC(14,2)",
+        "open_date": "DATE",
+    },
+    "branches": {
+        "branch_id": "TEXT",
+        "branch_name": "TEXT",
+        "manager_name": "TEXT",
+    },
+    "cards": {
+        "card_id": "TEXT",
+        "account_id": "TEXT",
+        "card_type": "TEXT",
+        "expiration_date": "DATE",
+    },
+    "loans": {
+        "loan_id": "TEXT",
+        "customer_id": "TEXT",
+        "loan_amount": "NUMERIC(14,2)",
+        "interest_rate": "NUMERIC(5,2)",
+        "start_date": "DATE",
+    },
+    "merchants": {
+        "merchant_id": "TEXT",
+        "merchant_name": "TEXT",
+        "city": "TEXT",
+    },
+}
+
 def required(name: str) -> str:
     v = os.getenv(name)
     if v is None or v.strip() == "":
@@ -54,8 +97,9 @@ def create_table_from_csv(csv_file: str, table_name: str, conn: Connection, curs
         with open(csv_file, 'r', encoding='utf-8', newline='') as f:
             reader = csv.reader(f)
             headers = next(reader)
-        
-        columns = ', '.join([f"{h} TEXT" for h in headers])
+
+        table_schema = TABLE_SCHEMAS.get(table_name, {})
+        columns = ', '.join([f"{h} {table_schema.get(h, 'TEXT')}" for h in headers])
         query = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns})"
         cursor.execute(query)
 
